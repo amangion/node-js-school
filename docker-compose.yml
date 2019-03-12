@@ -3,15 +3,15 @@ services :
   db:
     image: postgres:10-alpine
     ports:
-      - "5432:5432"
+      - "${POSTGRES_DB_PORT}:${POSTGRES_DB_PORT}"
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: apidb
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
   admin:
     image: adminer
     restart: always
     depends_on: 
       - db
     ports:
-      - 8080:8080
+      - ${AMINER_PORT}:${AMINER_PORT}

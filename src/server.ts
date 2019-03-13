@@ -11,7 +11,7 @@ import * as PostgressConnectionStringParser from 'pg-connection-string';
 
 import { logger } from './logging';
 import { config } from './config';
-import { router } from './routes';
+import { router } from './routes/routes';
 
 // Load environment variables from .env file, where API keys and passwords are configured
 dotenv.config({ path: '.env' });
@@ -32,13 +32,13 @@ createConnection({
     synchronize: true,
     logging: false,
     entities: [
-       'dist/entity/**/*.js',
-       'src/entity/**/*.ts'
+        'dist/entity/**/*.js',
+        'src/entity/**/*.ts'
     ],
     extra: {
         ssl: config.dbsslconn, // if not development, will use SSL
     }
- }).then(async connection => {
+}).then(async connection => {
 
     const app = new Koa();
 

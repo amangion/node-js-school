@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, useContainer } from 'typeorm';
 import { Length } from 'class-validator';
+import { User } from './user';
 
 @Entity("books")
 export class Book {
@@ -22,4 +23,9 @@ export class Book {
         type: "date"
     })
     date: Date;
+
+    @ManyToOne(type => User, user => user.books, {
+        nullable: false
+    })
+    user: User;
 }

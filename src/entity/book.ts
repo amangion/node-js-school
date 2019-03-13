@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Length } from 'class-validator';
 import { User } from './user';
 
-@Entity("books")
+@Entity('books')
 export class Book {
     @PrimaryGeneratedColumn()
     id: number;
@@ -20,7 +20,7 @@ export class Book {
     description: string;
 
     @Column({
-        type: "date",
+        type: 'date',
         nullable: false
     })
     date: Date;

@@ -86,6 +86,54 @@ export default class BookController {
         }
     }
 
+    public static async updateUserBook (ctx: BaseContext) {
+        const userId = +ctx.params.id || 0;
+        const bookId = +ctx.params.bookId || 0;
+
+        const bookRepository: Repository<Book> = getManager().getRepository(Book);
+   
+        const existedBook: Book = await bookRepository.findOne({
+            where: {
+                id: bookId,
+                user: userId
+            }
+        });
+
+        // check if book exists
+        if (!existedBook) {
+            ctx.status = 400;
+            ctx.body = 'The user book you are trying to retrieve doesn\'t exist in the db';
+            return;
+        }
+
+        // const updatedBook: Book = new Book();
+        const { name, description, date } = ctx.request.body;
+
+        existedBook.name = name;
+        existedBook.description = description;
+        existedBook.date = date;
+
+        const errors: ValidationError[] = await validate(existedBook);
+
+        if (errors.length > 0) {
+            // return BAD REQUEST status code and errors array
+            ctx.status = 400;
+            ctx.body = errors;
+            return;
+        } else if ( await bookRepository.findOne({ id: Not(Equal(existedBook.id)), name: existedBook.name }) ) {
+            // return BAD REQUEST status code and email already exists error
+            ctx.status = 400;
+            ctx.body = 'The specified book\'s name already exists';
+            return;
+        } 
+        // save the user contained in the PUT body
+        const book = await bookRepository.save(existedBook);
+        // return CREATED status code and updated user
+        ctx.status = 201;
+        ctx.body = book;
+        
+    }
+
 
 
 

@@ -10,19 +10,23 @@ export default class BookController {
 
         // get a book repository to perform operations with book
         const bookRepository: Repository<Book> = getManager().getRepository(Book);
+        const userRepository: Repository<User> = getManager().getRepository(User);
+
+        const user: User = await userRepository.findOne(+ctx.params.id);
+
+        // check if user exists
+        if(!user) {
+            ctx.status = 404;
+            ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
+            return;
+        }
 
         // load books by user's id
         const userBooks: Book[] = await bookRepository.find({
             where: {
-                user: +ctx.params.id || 0
+                user: user.id
             }
         });
-
-        if (!userBooks) {
-            ctx.status = 400;
-            ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
-            return;
-        }
 
         // return OK status code and loaded user object
         ctx.status = 200;

@@ -2,7 +2,7 @@ import * as Router from 'koa-router';
 import { UsersController } from './../controllers';
 
 const UsersRouter = new Router({
-  prefix: 'users',
+  prefix: '/users',
 });
 
 UsersRouter.get('/', UsersController.getUsers);

@@ -4,9 +4,9 @@ import { UsersRouter } from './users';
 import { BooksRouter } from './books';
 
 const composedRouters = composeRouters([
-  StubRouter,
   UsersRouter,
-  BooksRouter
+  StubRouter,
+  BooksRouter,
 ]);
 
 export default composedRouters;

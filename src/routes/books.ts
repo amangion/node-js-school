@@ -2,7 +2,7 @@ import * as Router from 'koa-router';
 import { BooksController } from './../controllers';
 
 const BooksRouter = new Router({
-  prefix: 'users/:user_id/books',
+  prefix: '/users/:user_id/books',
 });
 
 BooksRouter.get('/', BooksController.getBooks);

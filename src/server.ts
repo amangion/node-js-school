@@ -32,8 +32,8 @@ createConnection({
 	synchronize: true,
 	logging: false,
 	entities: [
-			'dist/entity/**/*.js',
-			'src/entity/**/*.ts'
+			'dist/entities/**/*.js',
+			'src/entities/**/*.ts'
 	],
 	extra: {
 			ssl: config.dbsslconn, // if not development, will use SSL
@@ -58,7 +58,7 @@ createConnection({
 	app.use(jwt({ secret: config.jwtSecret }));
 
 	// this routes are protected by the JWT middleware, also include middleware to respond with "Method Not Allowed - 405".
-	app.use(router);
+	app.use(router());
 
 	app.listen(config.port);
 

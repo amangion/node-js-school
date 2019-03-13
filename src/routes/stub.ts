@@ -6,4 +6,4 @@ const StubRouter = new Router();
 StubRouter.get('/', StubController.helloWorld);
 StubRouter.get('/jwt', StubController.getJwtPayload);
 
-export { StubRouter }
+export { StubRouter };

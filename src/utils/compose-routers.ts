@@ -7,12 +7,12 @@ function composeRouters(routers: Router[]) {
     const middlewares = [];
 
     routers.forEach(router => {
-      middlewares.push(router.routes())
-      middlewares.push(router.allowedMethods())
+      middlewares.push(router.routes());
+      middlewares.push(router.allowedMethods());
     });
 
     return compose(middlewares);
-  }
+  };
 }
 
 export { composeRouters };

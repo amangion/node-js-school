@@ -7,7 +7,8 @@
         ],
         "indent": [
             true,
-            "spaces"
+            "space",
+            2
         ],
         "one-line": [
             true,

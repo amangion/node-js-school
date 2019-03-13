@@ -24,7 +24,12 @@ export class Book {
   @IsDate()
   date: Date;
 
-  @ManyToOne(type => User, user => user.books, { nullable: true })
+  @Column()
+  description: string;
+
+  @ManyToOne(type => User, user => user.books, { 
+    nullable: true
+  })
   @JoinColumn({ name: 'owner_id' })
   owner: User;
 }

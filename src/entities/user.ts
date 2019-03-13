@@ -20,6 +20,9 @@ export class User {
 	@IsEmail()
 	email: string;
 
-	@OneToMany(type => Book, book => book.owner)
+	@OneToMany(type => Book, book => book.owner, {
+		cascade: true,
+		onDelete: 'CASCADE',
+	})
 	books: Book[];
 }

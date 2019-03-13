@@ -18,6 +18,3 @@ dist/**/*
 
 # Logging files
 *.log
-
-src/entity/book.ts
-src/controller/book.ts

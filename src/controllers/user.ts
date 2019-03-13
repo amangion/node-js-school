@@ -3,7 +3,7 @@ import { getManager, Repository, Not, Equal } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { User } from '../entity/user';
 
-export default class UserController {
+export class UsersController {
 
     public static async getUsers (ctx: BaseContext) {
 

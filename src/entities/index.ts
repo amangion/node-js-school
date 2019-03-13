@@ -1,2 +1,2 @@
-export { User } from './book';
+export { User } from './user';
 export { Book } from './book';

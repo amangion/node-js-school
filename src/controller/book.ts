@@ -15,7 +15,7 @@ export default class BookController {
         const user: User = await userRepository.findOne(+ctx.params.id);
 
         // check if user exists
-        if(!user) {
+        if (!user) {
             ctx.status = 404;
             ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
             return;
@@ -41,14 +41,13 @@ export default class BookController {
         const user: User = await userRepository.findOne(+ctx.params.id);
 
         // check if user exists
-        if(!user) {
+        if (!user) {
             ctx.status = 404;
             ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
             return;
         }
 
-        try {            
-
+        try {
             const { name, description, date } = ctx.request.body;
 
             // build up entity book
@@ -56,16 +55,21 @@ export default class BookController {
             newBook.name = name;
             newBook.description = description;
             newBook.date = date;
-    
+
             // validate book entity
             const errors: ValidationError[] = await validate(newBook);
-    
+
             if (errors.length > 0) {
                 // return BAD REQUEST status code and errors array
                 ctx.status = 400;
                 ctx.body = errors;
                 return;
-            }    
+            }
+            else if (await bookRepository.findOne({name: newBook.name})) {
+                ctx.status = 400;
+                ctx.body = 'The specified name of book already exists';
+                return;
+            }
             newBook.user = user;
 
             // save the book contained in the POST body
@@ -74,12 +78,12 @@ export default class BookController {
             // return CREATED status code and updated user
             ctx.status = 201;
             ctx.body = book;
-            
+
         } catch (error) {
             ctx.status = 404;
             ctx.body = error.message;
             return;
-        }   
+        }
     }
 
 

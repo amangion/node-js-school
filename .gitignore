@@ -19,6 +19,5 @@ dist/**/*
 # Logging files
 *.log
 
-src/routes/books.ts
 src/entity/book.ts
 src/controller/book.ts

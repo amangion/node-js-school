@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, useContainer } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Length } from 'class-validator';
 import { User } from './user';
 
@@ -20,7 +20,8 @@ export class Book {
     description: string;
 
     @Column({
-        type: "date"
+        type: "date",
+        nullable: false
     })
     date: Date;
 

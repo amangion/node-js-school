@@ -88,7 +88,7 @@ export default class UserController {
             ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = errors;
         } else if ( !await userRepository.findOne(userToBeUpdated.id) ) {
-            // check if a user with the specified id exists
+            // check if a user with the specified id not exists
             // return a BAD REQUEST status code and error message
             ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The user you are trying to update doesn\'t exist in the db';

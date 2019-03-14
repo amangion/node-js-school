@@ -16,5 +16,6 @@ router.delete('/users/:id', controller.user.deleteUser);
 // USER BOOKS ROUTES
 router.get('/users/:id/books', controller.book.getBooks);
 router.post('/users/:id/books', controller.book.createBook);
+router.put('/users/:id/books/:bookId', controller.book.updateBook);
 
 export { router };

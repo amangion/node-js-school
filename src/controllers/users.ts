@@ -7,124 +7,102 @@ export class UsersController {
 
 	public static async getUsers (ctx: BaseContext) {
 
-		// get a user repository to perform operations with user
-		const userRepository: Repository<User> = getManager().getRepository(User);
+		const UserRepository: Repository<User> = getManager().getRepository(User);
 
-		// load all users
-		const users: User[] = await userRepository.find();
+		const users: User[] = await UserRepository.find();
 
-		// return OK status code and loaded users array
 		ctx.status = 200;
 		ctx.body = users;
 	}
 
 	public static async getUser (ctx: BaseContext) {
 
-		// get a user repository to perform operations with user
-		const userRepository: Repository<User> = getManager().getRepository(User);
+		const UserRepository: Repository<User> = getManager().getRepository(User);
 
-		// load user by id
-		const user: User = await userRepository.findOne(+ctx.params.id || 0);
+		const user: User = await UserRepository.findOne(+ctx.params.id || 0);
 
 		if (!user) {
-			ctx.status = 400;
-			ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
-			return;
+			ctx.throw(404, 'The user you are trying to retrieve doesn\'t exist in the db' );
 		}
 
-		// return OK status code and loaded user object
 		ctx.status = 200;
 		ctx.body = user;
 	}
 
 	public static async createUser (ctx: BaseContext) {
 
-		// get a user repository to perform operations with user
-		const userRepository: Repository<User> = getManager().getRepository(User);
+		const UserRepository: Repository<User> = getManager().getRepository(User);
+		const { name, email } = ctx.request.body;
 
-		// build up entity user to be saved
-		const userToBeSaved: User = new User();
-		userToBeSaved.name = ctx.request.body.name;
-		userToBeSaved.email = ctx.request.body.email;
+		if ( await UserRepository.findOne({ email }) ) {
+			ctx.throw(400, 'The specified e-mail address already exists');
+		}
 
-		// validate user entity
-		const errors: ValidationError[] = await validate(userToBeSaved); // errors is an array of validation errors
+		const userToBeSaved: User = UserRepository.create({
+			name,
+			email,
+		});
+
+		const errors: ValidationError[] = await validate(userToBeSaved);
 
 		if (errors.length > 0) {
-			// return BAD REQUEST status code and errors array
-			ctx.status = 400;
-			ctx.body = errors;
-		} else if ( await userRepository.findOne({ email: userToBeSaved.email}) ) {
-			// return BAD REQUEST status code and email already exists error
-			ctx.status = 400;
-			ctx.body = 'The specified e-mail address already exists';
-		} else {
-			// save the user contained in the POST body
-			const user = await userRepository.save(userToBeSaved);
-			// return CREATED status code and updated user
-			ctx.status = 201;
-			ctx.body = user;
+			ctx.throw(400, 'Bad request', { errors });
 		}
+
+		const user = await UserRepository.save(userToBeSaved);
+
+		ctx.status = 201;
+		ctx.body = user;
 	}
 
 	public static async updateUser (ctx: BaseContext) {
 
-		// get a user repository to perform operations with user
-		const userRepository: Repository<User> = getManager().getRepository(User);
+		const UserRepository: Repository<User> = getManager().getRepository(User);
 
-		// update the user by specified id
-		// build up entity user to be updated
-		const userToBeUpdated: User = new User();
-		userToBeUpdated.id = +ctx.params.id || 0; // will always have a number, this will avoid errors
-		userToBeUpdated.name = ctx.request.body.name;
-		userToBeUpdated.email = ctx.request.body.email;
+		const id = +ctx.params.id;
+		const { email, name } = ctx.request.body;
 
-		// validate user entity
-		const errors: ValidationError[] = await validate(userToBeUpdated); // errors is an array of validation errors
+		if ( !await UserRepository.findOne(id) ) {
+			ctx.throw(400, 'The user you are trying to update doesn\'t exist in the db');
+		}
+
+		if ( await UserRepository.findOne({ id: Not(Equal(id)) , email }) ) {
+			ctx.throw(400, 'The specified e-mail address already exists');
+		}
+
+		const userToBeUpdated: User = UserRepository.create({
+			id,
+			name,
+			email,
+		});
+
+		const errors: ValidationError[] = await validate(userToBeUpdated);
 
 		if (errors.length > 0) {
-			// return BAD REQUEST status code and errors array
-			ctx.status = 400;
-			ctx.body = errors;
-		} else if ( !await userRepository.findOne(userToBeUpdated.id) ) {
-			// check if a user with the specified id exists
-			// return a BAD REQUEST status code and error message
-			ctx.status = 400;
-			ctx.body = 'The user you are trying to update doesn\'t exist in the db';
-		} else if ( await userRepository.findOne({ id: Not(Equal(userToBeUpdated.id)) , email: userToBeUpdated.email}) ) {
-			// return BAD REQUEST status code and email already exists error
-			ctx.status = 400;
-			ctx.body = 'The specified e-mail address already exists';
-		} else {
-			// save the user contained in the PUT body
-			const user = await userRepository.save(userToBeUpdated);
-			// return CREATED status code and updated user
-			ctx.status = 201;
-			ctx.body = user;
+			ctx.throw(400, 'Bad request', { errors });
 		}
+
+		const user = await UserRepository.save(userToBeUpdated);
+
+		ctx.status = 201;
+		ctx.body = user;
 	}
 
 	public static async deleteUser (ctx: BaseContext) {
 
-		// get a user repository to perform operations with user
-		const userRepository = getManager().getRepository(User);
+		const UserRepository = getManager().getRepository(User);
 
-		// find the user by specified id
-		const userToRemove: User = await userRepository.findOne(+ctx.params.id || 0);
+		const userToRemove: User = await UserRepository.findOne(+ctx.params.id || 0);
+
 		if (!userToRemove) {
-			// return a BAD REQUEST status code and error message
-			ctx.status = 400;
-			ctx.body = 'The user you are trying to delete doesn\'t exist in the db';
-		} else if (+ctx.state.user.id !== userToRemove.id) {
-			// check user's token id and user id are the same
-			// if not, return a FORBIDDEN status code and error message
-			ctx.status = 403;
-			ctx.body = 'A user can only be deleted by himself';
-		} else {
-			// the user is there so can be removed
-			await userRepository.remove(userToRemove);
-			// return a NO CONTENT status code
-			ctx.status = 204;
+			ctx.throw(400, 'The user you are trying to delete doesn\'t exist in the db');
 		}
+
+		if (+ctx.state.user.id !== userToRemove.id) {
+			ctx.throw(403, 'A user can only be deleted by himself');
+		}
+
+		await UserRepository.remove(userToRemove);
+		ctx.status = 204;
 	}
 }

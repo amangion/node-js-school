@@ -5,8 +5,8 @@ const bookRouter = new Router();
 
 bookRouter.get('/', controller.book.getBooks);
 bookRouter.post('/', controller.book.createBook);
-bookRouter.get('/:id', controller.book.getBook);
-bookRouter.put('/:id', controller.book.updateBook);
-bookRouter.delete('/:id', controller.book.deleteBook);
+bookRouter.get('/:bid', controller.book.getBook);
+bookRouter.put('/:bid', controller.book.updateBook);
+bookRouter.delete('/:bid', controller.book.deleteBook);
 
 export { bookRouter };

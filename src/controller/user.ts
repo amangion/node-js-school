@@ -7,7 +7,6 @@ import status = require('http-status');
 export default class UserController {
 
     public static async getUsers(ctx: BaseContext) {
-
         const userRepository: Repository<User> = getManager().getRepository(User);
 
         const users: User[] = await userRepository.find();
@@ -17,10 +16,9 @@ export default class UserController {
     }
 
     public static async getUser(ctx: BaseContext) {
-
         const userRepository: Repository<User> = getManager().getRepository(User);
 
-        const user: User = await userRepository.findOne(+ctx.params.id || 0);
+        const user: User = await userRepository.findOne(+ctx.params.uid || 0);
 
         if (!user) {
             ctx.status = status.BAD_REQUEST;
@@ -33,7 +31,6 @@ export default class UserController {
     }
 
     public static async createUser(ctx: BaseContext) {
-
         const userRepository: Repository<User> = getManager().getRepository(User);
 
         const userToBeSaved: User = new User();
@@ -63,7 +60,7 @@ export default class UserController {
         const userRepository: Repository<User> = getManager().getRepository(User);
 
         const userToBeUpdated: User = new User();
-        userToBeUpdated.id = +ctx.params.id || 0;
+        userToBeUpdated.id = +ctx.params.uid || 0;
         userToBeUpdated.name = ctx.request.body.name;
         userToBeUpdated.email = ctx.request.body.email;
 
@@ -95,7 +92,7 @@ export default class UserController {
     public static async deleteUser(ctx: BaseContext) {
         const userRepository = getManager().getRepository(User);
 
-        const userToRemove: User = await userRepository.findOne(+ctx.params.id || 0);
+        const userToRemove: User = await userRepository.findOne(+ctx.params.uid || 0);
 
         if (!userToRemove) {
             ctx.status = status.BAD_REQUEST;
@@ -103,11 +100,11 @@ export default class UserController {
             return;
         }
 
-        if (+ctx.state.user.id !== userToRemove.id) {
-            ctx.status = status.FORBIDDEN;
-            ctx.body = 'A user can only be deleted by himself';
-            return;
-        }
+        // if (+ctx.state.user.id !== userToRemove.id) {
+        //     ctx.status = status.FORBIDDEN;
+        //     ctx.body = 'A user can only be deleted by himself';
+        //     return;
+        // }
 
         await userRepository.remove(userToRemove);
         ctx.status = status.NO_CONTENT;

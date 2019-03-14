@@ -7,10 +7,10 @@ const userRouter = new Router();
 userRouter.get('/', controller.user.getUsers);
 userRouter.post('/', controller.user.createUser);
 
-userRouter.get('/:id', controller.user.getUser);
-userRouter.put('/:id', controller.user.updateUser);
-userRouter.delete('/:id', controller.user.deleteUser);
+userRouter.get('/:uid', controller.user.getUser);
+userRouter.put('/:uid', controller.user.updateUser);
+userRouter.delete('/:uid', controller.user.deleteUser);
 
-userRouter.use('/:id/books', bookRouter.routes(), bookRouter.allowedMethods());
+userRouter.use('/:uid/books', bookRouter.routes(), bookRouter.allowedMethods());
 
 export { userRouter };

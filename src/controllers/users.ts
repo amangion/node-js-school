@@ -18,8 +18,9 @@ export class UsersController {
 	public static async getUser (ctx: BaseContext) {
 
 		const UserRepository: Repository<User> = getManager().getRepository(User);
+		const id = +ctx.params.id;
 
-		const user: User = await UserRepository.findOne(+ctx.params.id || 0);
+		const user: User = await UserRepository.findOne(id, { relations : [ 'books' ]});
 
 		if (!user) {
 			ctx.throw(404, 'The user you are trying to retrieve doesn\'t exist in the db' );

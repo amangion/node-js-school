@@ -112,4 +112,44 @@ export default class BookController {
             ctx.body = book;
         }
     }
+
+    /** Delete Book from database
+     * Make sure that your Authorization header token would contain the proper user id in payload
+     * @param ctx
+     */
+    public static async deleteBook(ctx: BaseContext) {
+
+        const user = await getManager().findOne(User, +ctx.params.id);
+
+        if (!user) {
+            ctx.status = HttpStatus.BAD_REQUEST;
+            ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
+            return;
+        }
+
+        // get a user repository to perform operations with user
+        const bookRepository = getManager().getRepository(Book);
+
+        // find the user by specified id
+        const bookToRemove: Book = await bookRepository.findOne({
+            where: {id: +ctx.params.bookId || 0, user: user},
+            relations: ['user']
+        });
+        if (!bookToRemove) {
+            // return a BAD REQUEST status code and error message
+            ctx.status = HttpStatus.BAD_REQUEST;
+            ctx.body = 'The book you are trying to delete doesn\'t exist in the db';
+        } else if (+ctx.state.user.id !== bookToRemove.user.id) {
+            // check user's token id and user id are the same
+            // if not, return a FORBIDDEN status code and error message
+            console.log(ctx.state.user.id, bookToRemove.user.id);
+            ctx.status = HttpStatus.FORBIDDEN;
+            ctx.body = 'A book can only be deleted by user that created it';
+        } else {
+            // the user is there so can be removed
+            await bookRepository.remove(bookToRemove);
+            // return a NO CONTENT status code
+            ctx.status = HttpStatus.NO_CONTENT;
+        }
+    }
 }

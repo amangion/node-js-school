@@ -2,6 +2,7 @@ import { BaseContext } from 'koa';
 import { getManager, Repository, Not, Equal } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { User } from '../entity/user';
+import * as HttpStatus from 'http-status-codes';
 
 export default class UserController {
 
@@ -14,7 +15,7 @@ export default class UserController {
         const users: User[] = await userRepository.find();
 
         // return OK status code and loaded users array
-        ctx.status = 200;
+        ctx.status = HttpStatus.OK;
         ctx.body = users;
     }
 
@@ -27,13 +28,13 @@ export default class UserController {
         const user: User = await userRepository.findOne(+ctx.params.id || 0);
 
         if (!user) {
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
             return;
         }
 
         // return OK status code and loaded user object
-        ctx.status = 200;
+        ctx.status = HttpStatus.OK;
         ctx.body = user;
     }
 
@@ -52,17 +53,17 @@ export default class UserController {
 
         if (errors.length > 0) {
             // return BAD REQUEST status code and errors array
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = errors;
         } else if ( await userRepository.findOne({ email: userToBeSaved.email}) ) {
             // return BAD REQUEST status code and email already exists error
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The specified e-mail address already exists';
         } else {
             // save the user contained in the POST body
             const user = await userRepository.save(userToBeSaved);
             // return CREATED status code and updated user
-            ctx.status = 201;
+            ctx.status = HttpStatus.CREATED;
             ctx.body = user;
         }
     }
@@ -84,22 +85,22 @@ export default class UserController {
 
         if (errors.length > 0) {
             // return BAD REQUEST status code and errors array
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = errors;
         } else if ( !await userRepository.findOne(userToBeUpdated.id) ) {
             // check if a user with the specified id exists
             // return a BAD REQUEST status code and error message
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The user you are trying to update doesn\'t exist in the db';
         } else if ( await userRepository.findOne({ id: Not(Equal(userToBeUpdated.id)) , email: userToBeUpdated.email}) ) {
             // return BAD REQUEST status code and email already exists error
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The specified e-mail address already exists';
         } else {
             // save the user contained in the PUT body
             const user = await userRepository.save(userToBeUpdated);
             // return CREATED status code and updated user
-            ctx.status = 201;
+            ctx.status = HttpStatus.CREATED;
             ctx.body = user;
         }
     }
@@ -113,18 +114,18 @@ export default class UserController {
         const userToRemove: User = await userRepository.findOne(+ctx.params.id || 0);
         if (!userToRemove) {
             // return a BAD REQUEST status code and error message
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The user you are trying to delete doesn\'t exist in the db';
         } else if (+ctx.state.user.id !== userToRemove.id) {
             // check user's token id and user id are the same
             // if not, return a FORBIDDEN status code and error message
-            ctx.status = 403;
+            ctx.status = HttpStatus.FORBIDDEN;
             ctx.body = 'A user can only be deleted by himself';
         } else {
             // the user is there so can be removed
             await userRepository.remove(userToRemove);
             // return a NO CONTENT status code
-            ctx.status = 204;
+            ctx.status = HttpStatus.NO_CONTENT;
         }
     }
   }

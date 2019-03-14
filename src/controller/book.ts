@@ -1,4 +1,5 @@
 import { BaseContext } from 'koa';
+import * as HttpStatus from 'http-status-codes';
 import { getManager, Repository } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { User } from '../entity/user';
@@ -18,13 +19,13 @@ export default class BookController {
         });
 
         if (!user) {
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
             return;
         }
 
         // return OK status code and loaded users array
-        ctx.status = 200;
+        ctx.status = HttpStatus.OK;
         ctx.body = user.books;
     }
 
@@ -33,7 +34,7 @@ export default class BookController {
         const user = await getManager().findOne(User, +ctx.params.id);
 
         if (!user) {
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
             return;
         }
@@ -52,17 +53,17 @@ export default class BookController {
 
         if (errors.length > 0) {
             // return BAD REQUEST status code and errors array
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = errors;
         } else if (await bookRepository.findOne({name: bookToBeSaved.name})) {
             // return BAD REQUEST status code and email already exists error
-            ctx.status = 400;
+            ctx.status = HttpStatus.BAD_REQUEST;
             ctx.body = 'The specified book name already exists';
         } else {
             // save the user contained in the POST body
             const book = await bookRepository.save(bookToBeSaved);
             // return CREATED status code and updated user
-            ctx.status = 201;
+            ctx.status = HttpStatus.CREATED;
             ctx.body = book;
         }
     }

@@ -1,6 +1,8 @@
 import { BaseContext } from 'koa';
-import { getManager, Repository, Not, Equal } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
+import { OK, CREATED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes';
 import { validate, ValidationError } from 'class-validator';
+
 import { User, Book } from './../entities';
 
 export class BooksController {
@@ -13,7 +15,7 @@ export class BooksController {
 
     const books: Book[] = await BooksRepository.find({ ownerId } );
 
-		ctx.status = 200;
+		ctx.status = OK;
 		ctx.body = books;
   }
 
@@ -25,7 +27,7 @@ export class BooksController {
     const userId = +ctx.params.user_id;
 
     if ( !await UsersRepository.findOne({ id: userId }) ) {
-      ctx.throw(404, 'The user you are trying to create book doesn\'t exist in the db');
+      ctx.throw(BAD_REQUEST, 'The user you are trying to create book doesn\'t exist in the db');
     }
 
     const bookToBeSaved = BooksRepository.create({
@@ -38,11 +40,11 @@ export class BooksController {
     const errors: ValidationError[] = await validate(bookToBeSaved);
 
     if (errors.length > 0) {
-      ctx.throw(400, 'Bad request', { errors });
+      ctx.throw(BAD_REQUEST, 'Bad request', { errors });
     }
 
     const book: Book = await BooksRepository.save(bookToBeSaved);
-    ctx.status = 201;
+    ctx.status = CREATED;
     ctx.body = book;
   }
 
@@ -55,11 +57,11 @@ export class BooksController {
     const id = +ctx.params.id;
 
     if ( !await UsersRepository.findOne({ id: userId }) ) {
-      ctx.throw(404, 'The user you are trying to update book for doesn\'t exist in the db');
+      ctx.throw(BAD_REQUEST, 'The user you are trying to update book for doesn\'t exist in the db');
     }
 
     if ( !await BooksRepository.findOne({ id }) ) {
-      ctx.throw(404, 'The book you are trying to update doesn\'t exist in the db');
+      ctx.throw(BAD_REQUEST, 'The book you are trying to update doesn\'t exist in the db');
     }
 
     const bookToBeUpdated: Book = BooksRepository.create({
@@ -72,12 +74,12 @@ export class BooksController {
     const errors: ValidationError[] = await validate(bookToBeUpdated);
 
     if (errors.length > 0) {
-      ctx.throw(400, 'Bad request', { errors });
+      ctx.throw(BAD_REQUEST, 'Bad request', { errors });
     }
 
     const book: Book = await BooksRepository.save(bookToBeUpdated);
 
-    ctx.status = 200;
+    ctx.status = OK;
     ctx.body = book;
   }
 
@@ -89,12 +91,12 @@ export class BooksController {
     const bookToRemove: Book = await BooksRepository.findOne(id);
 
     if (!bookToRemove) {
-      ctx.throw(400, 'The book you are trying to delete doesn\'t exist in the db');
+      ctx.throw(BAD_REQUEST, 'The book you are trying to delete doesn\'t exist in the db');
     }
 
     await BooksRepository.remove(bookToRemove);
 
-    ctx.status = 204;
+    ctx.status = NO_CONTENT;
   }
 }
 

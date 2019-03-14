@@ -1,6 +1,15 @@
 import { BaseContext } from 'koa';
 import { getManager, Repository, Not, Equal } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
+import { 
+	BAD_REQUEST,
+	NO_CONTENT,
+	NOT_FOUND,
+	FORBIDDEN,
+	CREATED,
+	OK,
+} from 'http-status-codes';
+
 import { User } from '../entities';
 
 export class UsersController {
@@ -11,7 +20,7 @@ export class UsersController {
 
 		const users: User[] = await UserRepository.find();
 
-		ctx.status = 200;
+		ctx.status = OK;
 		ctx.body = users;
 	}
 
@@ -23,10 +32,10 @@ export class UsersController {
 		const user: User = await UserRepository.findOne(id, { relations : [ 'books' ]});
 
 		if (!user) {
-			ctx.throw(404, 'The user you are trying to retrieve doesn\'t exist in the db' );
+			ctx.throw(NOT_FOUND, 'The user you are trying to retrieve doesn\'t exist in the db' );
 		}
 
-		ctx.status = 200;
+		ctx.status = OK;
 		ctx.body = user;
 	}
 
@@ -36,7 +45,7 @@ export class UsersController {
 		const { name, email } = ctx.request.body;
 
 		if ( await UserRepository.findOne({ email }) ) {
-			ctx.throw(400, 'The specified e-mail address already exists');
+			ctx.throw(BAD_REQUEST, 'The specified e-mail address already exists');
 		}
 
 		const userToBeSaved: User = UserRepository.create({
@@ -47,12 +56,12 @@ export class UsersController {
 		const errors: ValidationError[] = await validate(userToBeSaved);
 
 		if (errors.length > 0) {
-			ctx.throw(400, 'Bad request', { errors });
+			ctx.throw(BAD_REQUEST, 'Bad request', { errors });
 		}
 
 		const user = await UserRepository.save(userToBeSaved);
 
-		ctx.status = 201;
+		ctx.status = CREATED;
 		ctx.body = user;
 	}
 
@@ -64,11 +73,11 @@ export class UsersController {
 		const { email, name } = ctx.request.body;
 
 		if ( !await UserRepository.findOne(id) ) {
-			ctx.throw(400, 'The user you are trying to update doesn\'t exist in the db');
+			ctx.throw(BAD_REQUEST, 'The user you are trying to update doesn\'t exist in the db');
 		}
 
 		if ( await UserRepository.findOne({ id: Not(Equal(id)) , email }) ) {
-			ctx.throw(400, 'The specified e-mail address already exists');
+			ctx.throw(BAD_REQUEST, 'The specified e-mail address already exists');
 		}
 
 		const userToBeUpdated: User = UserRepository.create({
@@ -80,12 +89,12 @@ export class UsersController {
 		const errors: ValidationError[] = await validate(userToBeUpdated);
 
 		if (errors.length > 0) {
-			ctx.throw(400, 'Bad request', { errors });
+			ctx.throw(BAD_REQUEST, 'Bad request', { errors });
 		}
 
 		const user = await UserRepository.save(userToBeUpdated);
 
-		ctx.status = 201;
+		ctx.status = OK;
 		ctx.body = user;
 	}
 
@@ -96,14 +105,14 @@ export class UsersController {
 		const userToRemove: User = await UserRepository.findOne(+ctx.params.id || 0);
 
 		if (!userToRemove) {
-			ctx.throw(400, 'The user you are trying to delete doesn\'t exist in the db');
+			ctx.throw(BAD_REQUEST, 'The user you are trying to delete doesn\'t exist in the db');
 		}
 
 		if (+ctx.state.user.id !== userToRemove.id) {
-			ctx.throw(403, 'A user can only be deleted by himself');
+			ctx.throw(FORBIDDEN, 'A user can only be deleted by himself');
 		}
 
 		await UserRepository.remove(userToRemove);
-		ctx.status = 204;
+		ctx.status = NO_CONTENT;
 	}
 }

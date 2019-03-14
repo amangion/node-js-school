@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Length } from 'class-validator';
+import { Length, MaxLength } from 'class-validator';
 import { User } from './user';
 
 @Entity('books')
@@ -16,7 +16,7 @@ export class Book {
     @Column({
         type: 'text'
     })
-    @Length(255)
+    @MaxLength(4096)
     description: string;
 
     @ManyToOne(type => User, user => user.books)

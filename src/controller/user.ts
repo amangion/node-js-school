@@ -35,7 +35,6 @@ export default class UserController {
         // return OK status code and loaded user object
         ctx.status = 200;
         ctx.body = user;
-
     }
 
     public static async createUser (ctx: BaseContext) {

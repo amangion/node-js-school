@@ -12,6 +12,9 @@ router.get('/users', controller.user.getUsers);
 router.get('/users/:id', controller.user.getUser);
 router.post('/users', controller.user.createUser);
 router.put('/users/:id', controller.user.updateUser);
-router.delete('/users/:id/books', controller.user.deleteUser);
+router.delete('/users/:id', controller.user.deleteUser);
+// USER BOOKS ROUTES
+router.get('/users/:id/books', controller.book.getBooks);
+router.post('/users/:id/books', controller.book.getBooks);
 
 export { router };

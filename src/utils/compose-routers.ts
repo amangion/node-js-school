@@ -2,8 +2,7 @@
 import * as compose from 'koa-compose';
 import * as Router from 'koa-router';
 
-function composeRouters(routers: Router[]) {
-  return () => {
+function composeRouters (routers: Router[]) {
     const middlewares = [];
 
     routers.forEach(router => {
@@ -12,7 +11,6 @@ function composeRouters(routers: Router[]) {
     });
 
     return compose(middlewares);
-  };
 }
 
 export { composeRouters };

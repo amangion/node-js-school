@@ -8,9 +8,9 @@ export class BooksController {
   public static async getBooks (ctx: BaseContext) {
     const BooksRepository = getManager().getRepository(Book);
 
-    const userId = +ctx.params.user_id;
+    const ownerId = +ctx.params.user_id;
 
-    const books: Book[] = await BooksRepository.find({ owner: { id: userId } });
+    const books: Book[] = await BooksRepository.find({ ownerId } );
 
 		ctx.status = 200;
 		ctx.body = books;
@@ -18,21 +18,25 @@ export class BooksController {
 
   public static async createBook (ctx: BaseContext) {
     const BooksRepository = getManager().getRepository(Book);
+    const UsersRepository = getManager().getRepository(User);
 
-    const bookToBeSaved: Book = new Book();
-    const id = +ctx.params.user_id;
+    const userId = +ctx.params.user_id;
 
-		bookToBeSaved.name = ctx.request.body.name;
-    bookToBeSaved.description = ctx.request.body.description;
-    bookToBeSaved.date = new Date(ctx.request.body.date);
-    bookToBeSaved.owner = { id } as User;
-    
-    const errors: ValidationError[] = await validate(bookToBeSaved); 
+    if ( !await UsersRepository.findOne({ id: userId }) ) {
+      ctx.throw(404, 'The user you are trying to create book doesn\'t exist in the db');
+    }
+
+    const bookToBeSaved = BooksRepository.create({
+      name: ctx.request.body.name,
+      description: ctx.request.body.description,
+      date: ctx.request.body.date,
+      ownerId: userId,
+    });
+
+    const errors: ValidationError[] = await validate(bookToBeSaved);
 
     if (errors.length > 0) {
-			ctx.status = 400;
-      ctx.body = errors;
-      return;
+      ctx.throw(400, 'Bad request', { errors });
     }
 
     const book = await BooksRepository.save(bookToBeSaved);
@@ -41,7 +45,37 @@ export class BooksController {
   }
 
   public static async updateBook (ctx: BaseContext) {
+    const BooksRepository = getManager().getRepository(Book);
+    const UsersRepository = getManager().getRepository(User);
 
+    const userId = +ctx.params.user_id;
+    const bookId = +ctx.params.id;
+
+    if ( !await UsersRepository.findOne({ id: userId }) ) {
+      ctx.throw(404, 'The user you are trying to create book doesn\'t exist in the db');
+    }
+
+    if ( !await BooksRepository.findOne({ id: bookId }) ) {
+      ctx.throw(404, 'The book you are trying to update doesn\'t exist in the db');
+    }
+
+    const bookToBeUpdated: Book = BooksRepository.create({
+      id: bookId,
+      name: ctx.request.body.name,
+      date: ctx.request.body.date,
+      description: ctx.request.body.description,
+    });
+
+    const errors: ValidationError[] = await validate(bookToBeUpdated);
+
+    if (errors.length > 0) {
+      ctx.throw(400, 'Bad request', { errors });
+    }
+
+    const book = BooksRepository.save(bookToBeUpdated);
+
+    ctx.status = 200;
+    ctx.body = book;
   }
 
   public static async deleteBook (ctx: BaseContext) {

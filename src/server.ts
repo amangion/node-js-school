@@ -10,6 +10,7 @@ import 'reflect-metadata';
 import * as PostgressConnectionStringParser from 'pg-connection-string';
 
 import router  from './routes';
+import { errorsHandler } from './middlewares';
 import { logger } from './logging';
 import { config } from './config';
 
@@ -57,8 +58,11 @@ createConnection({
 	// JWT middleware -> below this line routes are only reached if JWT token is valid, secret as env variable
 	app.use(jwt({ secret: config.jwtSecret }));
 
+	app.use(errorsHandler);
+
 	// this routes are protected by the JWT middleware, also include middleware to respond with "Method Not Allowed - 405".
-	app.use(router());
+	app.use(router);
+
 
 	app.listen(config.port);
 

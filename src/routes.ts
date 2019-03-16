@@ -14,10 +14,10 @@ router.post(    '/users',     				controller.user.createUser);
 router.put(     '/users/:id',         		controller.user.updateUser);
 router.delete(  '/users/:id/books',			controller.user.deleteUser);
 
-router.get(		'/users/:id/books',   		controller.user.getBooks);
-router.post(	'/users/:id/books',   		controller.user.createBook);
-router.put(	'	/users/:id/books/:book_id',	controller.user.updateBook);
-router.delete('	/users/:id/books/:book_id',	controller.user.deleteBook);
+router.get(		'/users/:id/books',   		controller.book.getUserBooks);
+router.post(	'/users/:id/books',   		controller.book.createUserBook);
+router.put(		'/users/:id/books/:book_id',controller.book.updateBook);
+router.delete(	'/users/:id/books/:book_id',controller.book.deleteBook);
 
 router.post(    '/seed',           		controller.user.seedData);
 

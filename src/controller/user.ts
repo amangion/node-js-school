@@ -9,31 +9,29 @@ import {randomString} from '../functions'
 export default class UserController {
 
     public static async seedData (ctx: BaseContext) {
-//        const userRepository: Repository<User> = getManager().getRepository(User);
-        const bookRepository: Repository<Book> = getManager().getRepository(Book);
-
-//        ctx.body = "Attempt to create 1 user... ";
-
+        const userRepository: Repository<User> = getManager().getRepository(User);
+//        const bookRepository: Repository<Book> = getManager().getRepository(Book);
+        ctx.body = "Attempt to create 1 user... ";
+/*
         const book = new Book();
         book.id = 1;
         book.name = "Book Name";
         book.description = "Book description.";
         book.date = Date.now();
         await bookRepository.save(book);
-        
+*/        
         const user = new User();
         user.name = "Timber_" + randomString(2);
         user.email = user.name + "@mail.ru"; 
-        user.books = [book];
-//      await userRepository.save(user);
-
+        await userRepository.save(user);
+/*
         ctx.body = book.id + ' ';
         ctx.body += book.name + ' ';
         ctx.body += book.description + ' ';
         ctx.body += book.date + ' ';
         ctx.body += book.id + ' ';
-
-        ctx.body += " Book created.";
+*/
+        ctx.body += " User created.";
         ctx.status = 201;
     }
 
@@ -74,11 +72,10 @@ export default class UserController {
     public static async createUser (ctx: BaseContext) {
         // get a user repository to perform operations with user
         const userRepository: Repository<User> = getManager().getRepository(User);
-        // build up entity user to be saved
         const userToBeSaved: User = new User();
         userToBeSaved.name = ctx.request.body.name;
         userToBeSaved.email = ctx.request.body.email;
-        // validate user entity
+
         const errors: ValidationError[] = await validate(userToBeSaved); // errors is an array of validation errors
 
         if (errors.length > 0) {

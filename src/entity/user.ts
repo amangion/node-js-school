@@ -10,13 +10,12 @@ export class User {
     @Column({
         length: 80
     })
-    @Length(10, 80)
     name: string;
 
     @Column({
         length: 100
     })
-    @Length(10, 100)
+    @Length(5, 100)
     @IsEmail()
     email: string;
 

@@ -10,17 +10,17 @@ export class Book {
     @Column({
         length: 80
     })
-    @Length(1, 80)
+    @Length(5, 80)
     name: string;
 
     @Column({
-        length: 100
+        length: 1000
     })
-    @Length(1, 1000)
+    @Length(5, 1000)
     description: string;
 
     @CreateDateColumn()
-    date = Date.now();;
+    date = Date;
 
     @ManyToOne(type => User, user => user.books)
     user: User;

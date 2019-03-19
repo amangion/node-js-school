@@ -11,7 +11,7 @@
     "serve": "node dist/server.js",
     "build": "npm run tslint && npm run build-ts",
     "start": "npm run serve",
-    "test-cucumber": "./node_modules/.bin/cucumber-js --parallel 1 --require ./features/steps/*.ts --require-module ts-node/register --format-options '{\"snippetInterface\": \"async-await\"}' --format json:reports/cucumber-report.json --format summary",
+    "test-cucumber": "./node_modules/.bin/cucumber-js --parallel 1 --require './features/step-definitions/steps/*.ts' --require-module ts-node/register --format-options '{\"snippetInterface\": \"async-await\"}' --format json:reports/cucumber-report.json --format summary",
     "report": "node reports/cucumber-html-reporter.js"
   },
   "engines": {
@@ -39,6 +39,7 @@
     "cucumber-html-reporter": "^4.0.5",
     "faker": "^4.1.0",
     "jest": "^24.5.0",
+    "md5-file": "^4.0.0",
     "nodemon": "^1.17.4",
     "request-promise": "^4.2.4",
     "shelljs": "^0.8.2",

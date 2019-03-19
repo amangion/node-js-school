@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai';
 import { Given, When, Then } from 'cucumber';
-import httpClient from './helpers/httpClient';
+import httpClient from '../helpers/httpClient';
 import * as faker from 'faker';
 
 When('I add new user with unique email', async function () {

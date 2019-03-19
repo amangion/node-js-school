@@ -58,6 +58,7 @@
       "src/**/*",
       "features/**/*",
       "tests/**/*",
-      "tasks/**/*"
+      "tasks/**/*",
+      "examples/**/*"
   ]
 }

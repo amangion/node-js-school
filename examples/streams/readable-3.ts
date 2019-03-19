@@ -1,4 +1,4 @@
-import {Readable} from 'stream'
+import { Readable } from 'stream';
 
 class Counter extends Readable {
     _max: number = 100;

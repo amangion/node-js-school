@@ -1,12 +1,12 @@
-import { Readable } from 'stream'
+import { Readable } from 'stream';
 
 let currentCharCode = 65;
 const lowLevelReader = (size) => {
     if (currentCharCode > 90) {
-        return null
+        return null;
     }
     return String.fromCharCode(currentCharCode++);
-}
+};
 
 class InStream extends Readable {
     _read(size) {

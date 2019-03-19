@@ -1,4 +1,4 @@
-import { Observer, ConcreteObservable }  from '../examples/events/observer-gof';
+import { Observer, ConcreteObservable }  from './observer-gof';
 
 const getObserMock = () => {
     const Mock = jest.fn<Observer, any>(() => ({

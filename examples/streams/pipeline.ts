@@ -1,6 +1,6 @@
-import * as zlib from "zlib";
-import * as util from "util";
-import * as stream from "stream";
+import * as zlib from 'zlib';
+import * as util from 'util';
+import * as stream from 'stream';
 import * as fs from 'fs';
 
 const pipeline = util.promisify(stream.pipeline);

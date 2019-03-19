@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as http from "http";
+import * as http from 'http';
 
 const server = http.createServer();
 server.on('request', (req, res) => {

@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import {Transform, TransformCallback} from "stream";
+import * as fs from 'fs';
+import { Transform, TransformCallback } from 'stream';
 
 const SOURCE_FILE = 'source.txt';
 const RESULT_FILE = 'result.txt';
@@ -18,7 +18,7 @@ class UpperCaseTransformer extends Transform {
 }
 
 
-//fs.createReadStream(SOURCE_FILE).pipe(new UpperCaseTransformer()).pipe(process.stdout);
+// fs.createReadStream(SOURCE_FILE).pipe(new UpperCaseTransformer()).pipe(process.stdout);
 
 const lastStream = fs.createReadStream(SOURCE_FILE).pipe(upperCaseTransformer).pipe(fs.createWriteStream(RESULT_FILE));
 

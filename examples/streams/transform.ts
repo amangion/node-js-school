@@ -13,7 +13,7 @@ const upperCaseTransformer = new Transform({
 
 class UpperCaseTransformer extends Transform {
     _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
-        callback(null, chunk.toString().toUpperCase());
+        callback(undefined, chunk.toString().toUpperCase());
     }
 }
 

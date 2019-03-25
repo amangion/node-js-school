@@ -6,6 +6,6 @@ const inStream = new Readable({
 
 inStream.push('ABCDEFGHIJKLM');
 inStream.push('NOPQRSTUVWXYZ');
-inStream.push(null); // No more data
+inStream.push(undefined); // No more data
 
 inStream.pipe(process.stdout);

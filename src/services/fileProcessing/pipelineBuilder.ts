@@ -1,12 +1,12 @@
-import {Readable} from 'stream';
-import {TransformerFactory} from './transformers/transformerFactory';
-import {Step} from "../../entity/step";
+import { Readable } from 'stream';
+import transformerFactory from './transformers/transformerFactory';
+import { Step } from '../../entity/step';
 
 export class PipelineBuilder {
     private transformerFactory;
 
-    public constructor() {
-        this.transformerFactory = new TransformerFactory();
+    public constructor(transformerFactory) {
+        this.transformerFactory = transformerFactory;
     }
 
     public buildForSteps(stream: Readable, steps: Step[]) {
@@ -16,3 +16,6 @@ export class PipelineBuilder {
             }, stream);
     }
 }
+
+const pipelineBuilder = new PipelineBuilder(transformerFactory);
+export default pipelineBuilder;

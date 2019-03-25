@@ -4,10 +4,10 @@ import { DeleteSpaceTransformer } from './deleteSpaceTransformer';
 import { LowerCaseTransformer } from './lowerCaseTransformer';
 import * as zlib from 'zlib';
 
-const UPPER_CASE = 'upperCase';
-const LOWER_CASE = 'lowerCase';
-const REMOVE_SPACES = 'removeSpaces';
-const GZIP = 'gzip';
+export const UPPER_CASE = 'upperCase';
+export const LOWER_CASE = 'lowerCase';
+export const REMOVE_SPACES = 'removeSpaces';
+export const GZIP = 'gzip';
 
 export const allowedSteps = [
     UPPER_CASE,
@@ -18,8 +18,6 @@ export const allowedSteps = [
 
 export class TransformerFactory {
     public create(type: String): Transform {
-
-
         switch (type) {
             case UPPER_CASE:
                 return new UpperCaseTransformer();
@@ -34,3 +32,5 @@ export class TransformerFactory {
         }
     }
 }
+
+export default new TransformerFactory();

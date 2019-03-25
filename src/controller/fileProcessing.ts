@@ -1,17 +1,17 @@
 import { BaseContext } from 'koa';
-import { PipelineBuilder } from '../services/fileProcessing/pipelineBuilder';
-import {Step} from "../entity/step";
-import {getManager, Repository} from "typeorm";
-import {Service} from "../entity/service";
+import pipelineBuilder, { PipelineBuilder } from '../services/fileProcessing/pipelineBuilder';
+import { Step } from '../entity/step';
+import { getManager, Repository } from 'typeorm';
+import { Service } from '../entity/service';
 import status = require('http-status');
-import {allowedSteps} from '../services/fileProcessing/transformers/transformerFactory';
+import { allowedSteps, default as transformerFactory } from '../services/fileProcessing/transformers/transformerFactory';
 
-export default class FileProcessingController {
+export class FileProcessingController {
 
     pipelineBuilder: PipelineBuilder;
 
-    public constructor() {
-        this.pipelineBuilder = new PipelineBuilder();
+    public constructor(pipelineBuilder: PipelineBuilder) {
+        this.pipelineBuilder = pipelineBuilder;
 
         this.executeService = this.executeService.bind(this);
     }
@@ -58,3 +58,6 @@ export default class FileProcessingController {
         ctx.body =  this.pipelineBuilder.buildForSteps(ctx.req, service.steps);
     }
 }
+
+const fileProcessingController = new FileProcessingController(pipelineBuilder);
+export default fileProcessingController;

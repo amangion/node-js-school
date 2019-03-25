@@ -12,7 +12,7 @@ export interface Observable {
 
 export class ConcreteObserver implements Observer {
     public update(eventName: String): void {
-        console.log(`Event [${eventName}] occurred!`);
+     //   console.log(`Event [${eventName}] occurred!`);
     }
 }
 

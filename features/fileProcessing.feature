@@ -2,7 +2,8 @@ Feature: As a API user, I want to process files
 
   @file
   Scenario Outline: Transform file
-    When I run the flow <flow> with the file <sourceFile> and save results to <resultFile>
+    Given a service with flow steps <flow>
+    When I run the service execution with the file <sourceFile> and save results to <resultFile>
     Then I should receive the result file <resultFile> with the same hash as for <expectedFile>
 
     Examples:

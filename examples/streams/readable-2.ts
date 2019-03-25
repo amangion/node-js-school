@@ -3,7 +3,7 @@ import { Readable } from 'stream';
 let currentCharCode = 65;
 const lowLevelReader = (size) => {
     if (currentCharCode > 90) {
-        return null;
+        return undefined;
     }
     return String.fromCharCode(currentCharCode++);
 };

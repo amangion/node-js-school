@@ -22,7 +22,16 @@ const checkFileExists = async filePath => {
     });
 };
 
-When('I run the flow {string} with the file {string} and save results to {string}', async function (flowSteps, sourceFile, resultFile) {
+Given('a service with flow steps {string}', async function (flowSteps) {
+    const response = await httpClient.post('/services', { flowSteps: flowSteps.split(',') });
+
+    this.service = response.body;
+
+    assert.strictEqual(response.statusCode, 201);
+});
+
+
+When('I run the service execution with the file {string} and save results to {string}', async function (sourceFile, resultFile) {
     const resultFilePath = RESULT_FILES_PATH + resultFile;
     if (await checkFileExists(resultFilePath)) {
         await unlink(resultFilePath);
@@ -30,7 +39,7 @@ When('I run the flow {string} with the file {string} and save results to {string
 
     await pipeline(
         fs.createReadStream(TEST_FILES_PATH + sourceFile),
-        httpClient.postWithStream('/execute?flowSteps=' + flowSteps),
+        httpClient.postWithStream(`/services/${this.service.id}/execute`),
         fs.createWriteStream(resultFilePath)
     );
 });

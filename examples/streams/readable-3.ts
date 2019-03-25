@@ -7,7 +7,7 @@ class Counter extends Readable {
     _read() {
         const i = this._index++;
         if (i > this._max)
-            this.push(null);
+            this.push(undefined);
         else {
             const str = String(i);
             const buf = Buffer.from(str, 'ascii');

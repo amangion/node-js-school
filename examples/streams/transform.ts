@@ -20,4 +20,6 @@ class UpperCaseTransformer extends Transform {
 
 // fs.createReadStream(SOURCE_FILE).pipe(new UpperCaseTransformer()).pipe(process.stdout);
 
-fs.createReadStream(SOURCE_FILE).pipe(upperCaseTransformer).pipe(fs.createWriteStream(RESULT_FILE));
+const stream = fs.createReadStream(SOURCE_FILE)
+    .pipe(upperCaseTransformer)
+    .pipe(fs.createWriteStream(RESULT_FILE));

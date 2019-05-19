@@ -8,5 +8,4 @@ Feature: As a API user, I want to process files
     Examples:
       | flow                          |     sourceFile    |      resultFile        | expectedFile              |
       | 'upperCase'                   |    'source.txt'   |    '1-result.txt'      |   '1-expected.txt'        |
-      | 'upperCase,removeSpaces'      |    'source.txt'   |    '2-result.txt'      |   '2-expected.txt'        |
-      | 'lowerCase,gzip'              |    'source.txt'   |    '3-result.txt.gz'   |   '3-expected.txt.gz'     |
+
